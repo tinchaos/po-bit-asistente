@@ -14,15 +14,20 @@ module.exports = async function handler(req, res) {
           content: "Decime hola",
         },
       ],
+      max_tokens: 100,
     });
 
-    return res.status(200).json({
-      reply: completion.choices[0].message.content,
-    });
+    console.log("=== RESPUESTA COMPLETA OPENAI ===");
+    console.log(JSON.stringify(completion, null, 2));
+
+    const reply =
+      completion?.choices?.[0]?.message?.content || "Sin respuesta";
+
+    return res.status(200).json({ reply });
 
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Error" });
+    console.error("ERROR EN API:", error);
+    return res.status(500).json({ error: "Error procesando la consulta." });
   }
 };
 
