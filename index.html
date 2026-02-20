@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Owner BIT – Plan Asistente Estratégico</title>
+
+<style>
+body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;
+background:#0b1220;
+display:flex;
+justify-content:center;
+}
+
+.chat-container{
+width:100%;
+max-width:520px;
+height:100vh;
+display:flex;
+flex-direction:column;
+background:#0f172a;
+}
+
+.header{
+background:#111827;
+padding:15px;
+color:#38bdf8;
+font-weight:600;
+text-align:center;
+font-size:14px;
+}
+
+.messages{
+flex:1;
+overflow-y:auto;
+padding:15px;
+display:flex;
+flex-direction:column;
+}
+
+.message{
+max-width:85%;
+padding:10px 14px;
+border-radius:12px;
+margin-bottom:10px;
+font-size:14px;
+line-height:1.5;
+white-space:pre-line;
+}
+
+.bot{
+background:#1e293b;
+color:white;
+align-self:flex-start;
+}
+
+.user{
+background:#22d3ee;
+color:black;
+align-self:flex-end;
+}
+
+.input-area{
+display:flex;
+padding:10px;
+background:#111827;
+}
+
+input{
+flex:1;
+padding:10px;
+border:none;
+border-radius:20px;
+outline:none;
+}
+
+button{
+margin-left:8px;
+padding:10px 15px;
+border:none;
+border-radius:20px;
+background:#22d3ee;
+cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="chat-container">
+<div class="header">
+Product Owner BIT – Plan Asistente Estratégico
+</div>
+
+<div class="messages" id="messages"></div>
+
+<div class="input-area">
+<input type="text" id="userInput" placeholder="Escribí tu mensaje..." />
+<button onclick="sendMessage()">Enviar</button>
+</div>
+</div>
+
+<script>
+
+let name = "";
+let initialized = false;
+const messages = document.getElementById("messages");
+
+function addMessage(text, sender){
+const div = document.createElement("div");
+div.classList.add("message", sender);
+div.innerHTML = text;
+messages.appendChild(div);
+messages.scrollTop = messages.scrollHeight;
+}
+
+async function sendMessage(){
+const input = document.getElementById("userInput");
+const text = input.value.trim();
+if(!text) return;
+
+addMessage(text,"user");
+input.value="";
+
+if(!initialized){
+name = text;
+initialized = true;
+addMessage("Gracias. Ahora podés preguntarme cualquier aspecto del plan estratégico.", "bot");
+return;
+}
+
+const response = await fetch("/api/chat", {
+method:"POST",
+headers:{ "Content-Type":"application/json" },
+body:JSON.stringify({ message:text, name:name })
+});
+
+const data = await response.json();
+addMessage(data.reply,"bot");
+}
+
+addMessage("Hola 👋 ¿Cómo te llamás?", "bot");
+
+</script>
+
+</body>
+</html>
