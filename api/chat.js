@@ -18,7 +18,7 @@ module.exports = async function handler(req, res) {
         },
         {
           role: "user",
-          content: Visitante: ${name}\nPregunta: ${message},
+          content: `Visitante: ${name}\nPregunta: ${message}`,
         },
       ],
       max_tokens: 500,
@@ -32,3 +32,4 @@ module.exports = async function handler(req, res) {
     res.status(500).json({ error: "Error procesando la consulta." });
   }
 };
+
